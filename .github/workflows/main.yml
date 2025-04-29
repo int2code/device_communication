@@ -1,6 +1,0 @@
-uses: rodrigogiraoserrao/python-black-check@master
-with:
-  line-length: '80'
-  path: '.'
-  include: 'apps'
-  exclude: '(/*.html|/*.mo|/*.po|/*.png|/*.rst)'
