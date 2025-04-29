@@ -1,0 +1,2 @@
+- name: Black Check
+  uses: jpetrucciani/black-check@25.1.0
