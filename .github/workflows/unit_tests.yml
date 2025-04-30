@@ -20,10 +20,12 @@ jobs:
         pip install .[test]
     - name: Gathering the changed files
       run: |
+        mkdir -p reports/pytest_report
+        
         pytest -vv --log-level DEBUG \
         --cov src \
         --cov-branch \
-        --cov-report html:pytest_coverage \
+        --cov-report html:reports/pytest_coverage \
         --cov-fail-under 0 \
         --junitxml=reports/junit/test-results-${{ matrix.python-version }}.xml
         --html=reports/pytest_report/index.html
