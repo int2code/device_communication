@@ -21,10 +21,15 @@ jobs:
     - name: Gathering the changed files
       run: |
         pytest -vv --log-level DEBUG \
-        --cov src --cov-branch --cov-report html:pytest_coverage --cov-fail-under 0 \
-        --html pytest_report/index.html
-    artifacts:
-      paths:
-        - pytest_coverage/
-        - pytest_report/
-      expire_in: 1 week
+        --cov src \
+        --cov-branch \
+        --cov-report html:pytest_coverage \
+        --cov-fail-under 0 \
+        --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+    - name: Upload pytest test results
+    uses: actions/upload-artifact@v4
+    with:
+      name: pytest-results-${{ matrix.python-version }}
+      path: junit/test-results-${{ matrix.python-version }}.xml
+    # Use always() to always run this step to publish test results when there are test failures
+    if: ${{ always() }}
