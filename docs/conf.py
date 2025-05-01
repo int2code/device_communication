@@ -62,5 +62,6 @@ def run_apidoc():
     source_path = os.path.abspath(os.path.join(src_dir, project.replace("-", "_")))
     subprocess.run(["sphinx-apidoc", "-f", "-o", output_path, source_path], check=True)
 
+
 # Generate API documentation
 run_apidoc()
