@@ -3,6 +3,8 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # pylint: skip-file
+import os
+import subprocess
 from pathlib import Path
 
 ROOT_DIR = Path("..").resolve()
@@ -51,3 +53,14 @@ html_theme = "sphinx_rtd_theme"
 
 # suppress warning from release notes and readme markdown files
 suppress_warnings = ["myst.header"]
+
+
+def run_apidoc():
+    src_dir = "../src"
+
+    output_path = os.path.join(os.path.dirname(__file__), "modules")
+    source_path = os.path.abspath(os.path.join(src_dir, project.replace("-", "_")))
+    subprocess.run(["sphinx-apidoc", "-f", "-o", output_path, source_path], check=True)
+
+# Generate API documentation
+run_apidoc()
