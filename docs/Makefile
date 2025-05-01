@@ -8,9 +8,20 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 
+PACKAGE_NAME = device_communication
+SRC_DIR = ../src
+MODULES_DIR = modules
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+apidoc:
+	@sphinx-apidoc -f -o $(MODULES_DIR) $(SRC_DIR)/$(PACKAGE_NAME)
+
+html: apidoc
+	$(SPHINXBUILD) -b html $(SOURCEDIR) $(BUILDDIR)/html
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 .PHONY: help Makefile
 

@@ -1,9 +1,9 @@
-.. int2code-device-communication  documentation master file, created by
+.. device-communication  documentation master file, created by
    sphinx-quickstart on Wed Apr  9 13:03:19 2025.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-int2code-device-communication documentation
+device-communication documentation
 ===========================================
 
 .. if needed use .. include:: alias.txt directive

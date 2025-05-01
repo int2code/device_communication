@@ -12,7 +12,7 @@ with open(ROOT_DIR / "version.txt") as fh:
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "int2code-device-communication"
+project = "device-communication"
 copyright = "2025, int2code"
 author = "int2code"
 
