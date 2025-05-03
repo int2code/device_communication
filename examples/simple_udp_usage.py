@@ -4,6 +4,8 @@ import logging
 import time
 from typing import List, Tuple
 
+from plum.structure import Structure
+
 from device_communication.base.packetizer import BaseFrameParser
 from device_communication.base.packets import ExamplePacket
 from device_communication.base.simulator import BaseSimulator
@@ -13,7 +15,6 @@ from device_communication.udp.communication_handlers import (
 from device_communication.udp.packetizer import (
     ThreadedUDPRequestHandler as BaseThreadedUDPRequestHandler,
 )
-from plum.structure import Structure
 
 logging.basicConfig(
     level=logging.DEBUG,
