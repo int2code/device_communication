@@ -21,7 +21,9 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
 
     # pylint: disable=too-many-arguments, too-many-instance-attributes, too-many-positional-arguments
 
-    THREADED_REQUEST_HANDLER_CLS: type(ThreadedUDPRequestHandler) = ThreadedUDPRequestHandler
+    THREADED_REQUEST_HANDLER_CLS: type(ThreadedUDPRequestHandler) = (
+        ThreadedUDPRequestHandler
+    )
 
     def __init__(
         self,
