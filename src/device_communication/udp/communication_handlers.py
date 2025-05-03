@@ -2,7 +2,7 @@
 
 from contextlib import contextmanager
 from queue import Empty
-from typing import List, Optional, Any, Generator
+from typing import Optional, Any, Generator
 
 from device_communication.base.communication_handlers import BaseCommunicationHandler
 from device_communication.udp.packetizer import ThreadedUDPRequestHandler
