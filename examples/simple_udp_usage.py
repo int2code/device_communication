@@ -1,3 +1,5 @@
+"""Example usage of UDP communication handler and simulator."""
+
 import logging
 import time
 from typing import List, Tuple
@@ -45,6 +47,8 @@ class FrameParser(BaseFrameParser):
 
 
 class ThreadedUDPRequestHandler(BaseThreadedUDPRequestHandler):
+    """Threaded UDP request handler."""
+
     FRAME_PARSER_CLS = FrameParser
 
 
