@@ -2,7 +2,7 @@
 
 from contextlib import contextmanager
 from queue import Empty
-from typing import List, Optional
+from typing import Optional, Any, Generator
 
 from device_communication.base.communication_handlers import BaseCommunicationHandler
 from device_communication.udp.packetizer import ThreadedUDPRequestHandler
@@ -20,6 +20,10 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
     """
 
     # pylint: disable=too-many-arguments, too-many-instance-attributes, too-many-positional-arguments
+
+    THREADED_REQUEST_HANDLER_CLS: type(ThreadedUDPRequestHandler) = (
+        ThreadedUDPRequestHandler
+    )
 
     def __init__(
         self,
@@ -41,14 +45,17 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
     def __repr__(self):
         return f"IP: {self._ip_address}, RX: {self._in_port}, TX: {self._out_port}."
 
+    def _create_server(self):
+        return ThreadedUDPServer(
+            (self._ip_address, self._in_port),
+            (self._ip_address, self._out_port),
+            self.THREADED_REQUEST_HANDLER_CLS,
+        )
+
     @contextmanager
     def connect(self):
         """Context manger for run UDP server."""
-        self._server = ThreadedUDPServer(
-            (self._ip_address, self._in_port),
-            (self._ip_address, self._out_port),
-            ThreadedUDPRequestHandler,
-        )
+        self._server = self._create_server()
         with self._server:  # pylint: disable=duplicate-code
             try:
                 yield self
@@ -57,11 +64,7 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
 
     def make_connection(self):
         """Run UDP server in non context."""
-        self._server = ThreadedUDPServer(
-            (self._ip_address, self._in_port),
-            (self._ip_address, self._out_port),
-            ThreadedUDPRequestHandler,
-        )
+        self._server = self._create_server()
         self._server.start()
 
     # pylint: disable=duplicate-code
@@ -76,7 +79,7 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
                 self._server.incoming_buffer.task_done()
                 self.rx_count += 1
 
-    def receive(self) -> List[bytes]:
+    def receive(self) -> Generator[Any, Any, None]:
         """Read incoming buffer."""
         if self._server is None:
             raise RuntimeError(

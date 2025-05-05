@@ -21,10 +21,10 @@ class ThreadedUDPServer(socketserver.UDPServer):
         self,
         server_address: Tuple[str, int],
         peer_address: Tuple[str, int],
-        RequestHandlerClass: ThreadedUDPRequestHandler,
+        request_handler_cls: type(ThreadedUDPRequestHandler),
         name="",
     ):
-        super().__init__(server_address, RequestHandlerClass)
+        super().__init__(server_address, request_handler_cls)
         self.incoming_buffer = Queue()
         self.name = (
             f"{name} [{server_address[1]}]" if name else f"[{server_address[1]}]"
