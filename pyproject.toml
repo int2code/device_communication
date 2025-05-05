@@ -21,6 +21,7 @@ write_to = "src/device_communication/_version.py"
 [tool.setuptools.dynamic.optional-dependencies]
 test = { file = ["requirements-test.txt"] }
 dev = { file = ["requirements-test.txt", "requirements-dev.txt"] }
+docs = { file = ["requirements-test.txt", "docs/requirements.txt"]  }
 
 [build-system]
 # These are the assumed default build requirements from pip:
