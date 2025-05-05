@@ -13,8 +13,10 @@ where = ["src"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
-version = { file = "version.txt" }
 readme = { file = ["README.md"] }
+
+[tool.setuptools_scm]
+version_file = "device_communication/_version.py"
 
 [tool.setuptools.dynamic.optional-dependencies]
 test = { file = ["requirements-test.txt"] }
@@ -23,5 +25,5 @@ dev = { file = ["requirements-test.txt", "requirements-dev.txt"] }
 [build-system]
 # These are the assumed default build requirements from pip:
 # https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
-requires = ["setuptools>=43.0.0", "wheel"]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
