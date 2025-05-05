@@ -3,8 +3,7 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # pylint: skip-file
-import os
-import subprocess
+from datetime import date
 from pathlib import Path
 
 ROOT_DIR = Path("..").resolve()
@@ -15,7 +14,7 @@ with open(ROOT_DIR / "version.txt") as fh:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "device-communication"
-copyright = "2025, int2code"
+copyright = f"{date.today().year}, int2code"
 author = "int2code"
 
 version = VERSION
@@ -40,9 +39,7 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    "README.md",  # this is readme describing how to generate docs
 ]
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -53,15 +50,3 @@ html_theme = "sphinx_rtd_theme"
 
 # suppress warning from release notes and readme markdown files
 suppress_warnings = ["myst.header"]
-
-
-def run_apidoc():
-    src_dir = "../src"
-
-    output_path = os.path.join(os.path.dirname(__file__), "modules")
-    source_path = os.path.abspath(os.path.join(src_dir, project.replace("-", "_")))
-    subprocess.run(["sphinx-apidoc", "-f", "-o", output_path, source_path], check=True)
-
-
-# Generate API documentation
-run_apidoc()

@@ -32,18 +32,11 @@ class FrameParser(BaseFrameParser):
     def parse_frames(
         cls, buffer: bytearray
     ) -> Tuple[List[bytearray], bytearray, bytearray]:
+        # This is a placeholder implementation. Replace with actual parsing logic.
         return [buffer], bytearray(), bytearray()
 
     @classmethod
     def build_frame(cls, data: bytearray) -> bytearray:
-        """Frame data
-
-        Calculate CRC, encode the data, append terminator etc. before sending the data.
-
-        :param data: buffer to send
-        :return: encoded data with CRC, terminator etc.
-
-        """
         raise NotImplementedError()
 
 
