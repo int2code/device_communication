@@ -10,12 +10,20 @@ from device_communication.udp.servers import ThreadedUDPServer
 
 
 class UdpCommunicationHandler(BaseCommunicationHandler):
-    """Layer between user/client and Server
+    """
+    Layer between user/client and Server
 
     Maintains UDP Server running while providing methods for reading and writing from and to the tar
 
     Class that maintains the UDP Server thread running. Connects user/client to server
     instance for writing and reading binary data.
+
+    :param ip_address: IP address of the UDP server.
+    :param in_port: Port for receiving data.
+    :param out_port: Port for sending data.
+    :param timeout: Timeout for server operations.
+    :param name: Optional name for the handler instance.
+    :param bind_and_activate: Whether to bind and activate the server immediately.
 
     """
 
@@ -32,6 +40,7 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
         out_port: int,
         timeout: int = 5,
         name: Optional[str] = None,
+        bind_and_activate: bool = True,
     ):
         super().__init__()
         self._ip_address = ip_address
@@ -41,6 +50,7 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
         self._server = None
 
         self.name = name or repr(self)
+        self._bind_and_activate = bind_and_activate
 
     def __repr__(self):
         return f"IP: {self._ip_address}, RX: {self._in_port}, TX: {self._out_port}."
@@ -50,11 +60,16 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
             (self._ip_address, self._in_port),
             (self._ip_address, self._out_port),
             self.THREADED_REQUEST_HANDLER_CLS,
+            bind_and_activate=self._bind_and_activate
         )
 
     @contextmanager
     def connect(self):
-        """Context manger for run UDP server."""
+        """
+        Context manager for running the UDP server.
+
+        :yield: Instance of `UdpCommunicationHandler`.
+        """
         self._server = self._create_server()
         with self._server:  # pylint: disable=duplicate-code
             try:
@@ -63,13 +78,17 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
                 pass
 
     def make_connection(self):
-        """Run UDP server in non context."""
+        """
+        Run the UDP server outside of a context manager.
+        """
         self._server = self._create_server()
         self._server.start()
 
     # pylint: disable=duplicate-code
     def flush(self):
-        """Flush incoming buffer."""
+        """
+        Flush the incoming buffer by clearing all pending messages.
+        """
         while True:
             try:
                 self._server.incoming_buffer.get_nowait()
@@ -80,7 +99,12 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
                 self.rx_count += 1
 
     def receive(self) -> Generator[Any, Any, None]:
-        """Read incoming buffer."""
+        """
+        Read data from the incoming buffer.
+
+        :raises RuntimeError: If the server is not running.
+        :yield: Data from the incoming buffer.
+        """
         if self._server is None:
             raise RuntimeError(
                 "Before call `receive()` method connection must be establish. Use `connect()` "
@@ -96,7 +120,12 @@ class UdpCommunicationHandler(BaseCommunicationHandler):
                 self.rx_count += 1
 
     def send(self, data: bytes) -> None:
-        """Send data."""
+        """
+        Send data to the server.
+
+        :param data: Binary data to send.
+        :raises RuntimeError: If the server is not running.
+        """
         if self._server is None:
             raise RuntimeError(
                 "Before call `send()` method connection must be establish. Use `connect()` "

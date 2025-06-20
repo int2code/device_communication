@@ -12,9 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 class ThreadedUDPServer(socketserver.UDPServer):
-    """Threaded UDP Server."""
+    """
+    Threaded UDP Server.
 
-    daemon_threads = True
+    :param server_address: Address and port for the server to bind to.
+    :param peer_address: Address and port of the peer to communicate with.
+    :param request_handler_cls: Class to handle incoming requests.
+    :param name: Optional name for the server instance.
+    :param bind_and_activate: Whether to bind and activate the server immediately.
+
+    """
+
     timeout = 0.1
 
     def __init__(
@@ -22,18 +30,18 @@ class ThreadedUDPServer(socketserver.UDPServer):
         server_address: Tuple[str, int],
         peer_address: Tuple[str, int],
         request_handler_cls: type(ThreadedUDPRequestHandler),
-        name="",
+        name: str = "",
+        bind_and_activate: bool = True,
     ):
-        super().__init__(server_address, request_handler_cls)
+        super().__init__(
+            server_address, request_handler_cls, bind_and_activate=bind_and_activate
+        )
         self.incoming_buffer = Queue()
         self.name = (
             f"{name} [{server_address[1]}]" if name else f"[{server_address[1]}]"
         )
         self._server_thread = None
         self.peer_address = peer_address
-        self._lock = threading.Lock()
-        self.__is_shut_down = threading.Event()
-        self.__shutdown_request = False
 
     def start(self):
         """Start the server thread."""
@@ -59,36 +67,8 @@ class ThreadedUDPServer(socketserver.UDPServer):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.shutdown()
-        self._server_thread.join()
+        self.stop()
         super().__exit__(exc_type, exc_val, exc_tb)
-
-    def serve_forever(self, poll_interval=0.01):
-        """Handle one request at a time until shutdown.
-
-        Polls for shutdown every poll_interval seconds. Ignores
-        self.timeout. If you need to do periodic tasks, do them in
-        another thread.
-        """
-        self.__is_shut_down.clear()
-        while not self.__shutdown_request:
-            self.handle_request()
-            self.service_actions()
-            if self.__shutdown_request:
-                break
-
-        self.__shutdown_request = False
-        self.__is_shut_down.set()
-
-    def shutdown(self):
-        """Stops the serve_forever loop.
-
-        Blocks until the loop has finished. This must be called while
-        serve_forever() is running in another thread, or it will
-        deadlock.
-        """
-        self.__shutdown_request = True
-        self.__is_shut_down.wait()
 
     def write(self, data, peer_address: Optional[Tuple[str, int]] = None):
         """Write data to peer.
